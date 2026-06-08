@@ -1,44 +1,46 @@
+import random
 from locust import HttpUser, task, between
 
-class SauceDemoUser(HttpUser):
-    wait_time = between(1, 3)
 
-    @task(5)
-    def home(self):
-        self.client.get("/")
+class DummyJsonUser(HttpUser):
+    wait_time = between(1, 3)
+    host = "https://dummyjson.com"
+
+    @task(8)
+    def listar_produtos(self):
+        self.client.get("/products")
 
     @task(4)
     def login(self):
         self.client.post(
-            "/login",
+            "/auth/login",
             json={
-                "username": "standard_user",
-                "password": "secret_sauce"
+                "username": "emilys",
+                "password": "emilyspass"
             }
         )
 
-    @task(8)
-    def produtos(self):
-        self.client.get("/inventory")
-
     @task(6)
+    def produto_especifico(self):
+        produto_id = random.randint(1, 30)
+        self.client.get(f"/products/{produto_id}", name="/products/[id]")
+
+    @task(5)
     def adicionar_carrinho(self):
         self.client.post(
-            "/cart/add",
-            json={"product_id": 1}
+            "/carts/add",
+            json={
+                "userId": 1,
+                "products": [
+                    {"id": random.randint(1, 30), "quantity": 1}
+                ]
+            }
         )
 
     @task(3)
     def visualizar_carrinho(self):
-        self.client.get("/cart")
+        self.client.get("/carts/1")
 
     @task(2)
-    def checkout(self):
-        self.client.post(
-            "/checkout",
-            json={
-                "firstName": "Teste",
-                "lastName": "Usuario",
-                "postalCode": "12345"
-            }
-        )
+    def buscar_produto(self):
+        self.client.get("/products/search?q=phone")
