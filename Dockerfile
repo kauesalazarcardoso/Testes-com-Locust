@@ -6,4 +6,4 @@ COPY . .
 
 RUN pip install locust
 
-CMD ["locust", "-f", "locustfile.py", "--host=https://example.com"]
+CMD ["locust", "-f", "locustfile.py"]
