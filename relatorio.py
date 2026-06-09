@@ -73,7 +73,6 @@ def grafico_historico(historicos):
     fig.tight_layout()
     return fig
 
-
 def grafico_tabela(stats):
     fig, ax = plt.subplots(figsize=(12, 3))
     ax.axis("off")
